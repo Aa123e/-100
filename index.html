@@ -44,43 +44,23 @@ body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:v
 .stab.active{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
 
 /* Scanner */
-.scanner-wrap{background:#000;border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative;min-height:220px}
-#scanner-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;border-radius:inherit}
-/* Our overlay on top */
-.scanner-overlay{position:absolute;inset:0;pointer-events:none;z-index:10}
-.scanner-zone{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:85%;height:50%;
-  border-radius:12px;
-  box-shadow:0 0 0 9999px rgba(0,0,0,0.52);
-}
-.scanner-zone::after{
-  content:'';position:absolute;inset:-2px;
-  border:2.5px solid var(--gold);border-radius:13px;
-}
-.scanner-line{
-  position:absolute;left:0;right:0;height:3px;top:0;
-  background:linear-gradient(90deg,transparent,var(--green) 30%,#7fff9e 50%,var(--green) 70%,transparent);
-  box-shadow:0 0 10px 2px var(--green);
-  animation:laserScan 1.8s ease-in-out infinite;
-  border-radius:2px;
-}
-@keyframes laserScan{0%{top:2px}50%{top:calc(100% - 5px)}100%{top:2px}}
-.sc-corner{position:absolute;width:22px;height:22px;border-color:#fff;border-style:solid}
-.sc-tl{top:-2px;right:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
-.sc-tr{top:-2px;left:-2px; border-width:3px 3px 0 0;border-radius:0 4px 0 0}
-.sc-bl{bottom:-2px;right:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
-.sc-br{bottom:-2px;left:-2px; border-width:0 3px 3px 0;border-radius:0 0 4px 0}
-.scanner-hint{
-  position:absolute;bottom:0;left:0;right:0;z-index:11;
-  padding:8px;text-align:center;
-  background:linear-gradient(transparent,rgba(0,0,0,0.65));
-  color:rgba(255,255,255,0.92);font-size:12px;
-  pointer-events:none;
-}
-@keyframes flashGreen{0%{background:rgba(26,138,74,0)}40%{background:rgba(26,138,74,0.5)}100%{background:rgba(26,138,74,0)}}
-.scanner-flash{position:absolute;inset:0;border-radius:14px;pointer-events:none;animation:flashGreen .5s ease-out forwards;z-index:20}
+.scanner-wrap{background:#000;border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative;aspect-ratio:4/3}
+#scanner-video{width:100%;height:100%;display:block;object-fit:cover}
+/* Dark overlay with clear center zone */
+.scanner-overlay{position:absolute;inset:0;pointer-events:none}
+.scanner-zone{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72%;height:38%;border:2.5px solid var(--gold);border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,0.45)}
+.scanner-line{position:absolute;width:100%;height:2.5px;background:linear-gradient(90deg,transparent,var(--green),transparent);animation:scan 1.6s ease-in-out infinite;box-shadow:0 0 10px var(--green),0 0 22px rgba(26,138,74,0.5);top:0}
+@keyframes scan{0%,100%{top:0%}50%{top:calc(100% - 2.5px)}}
+.scanner-corner{position:absolute;width:22px;height:22px;border-color:var(--gold);border-style:solid}
+.sc-tl{top:12%;right:14%;border-width:3px 0 0 3px;border-radius:3px 0 0 0}
+.sc-tr{top:12%;left:14%;border-width:3px 3px 0 0;border-radius:0 3px 0 0}
+.sc-bl{bottom:12%;right:14%;border-width:0 0 3px 3px;border-radius:0 0 0 3px}
+.sc-br{bottom:12%;left:14%;border-width:0 3px 3px 0;border-radius:0 0 3px 0}
+.scanner-hint{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.85);font-size:11px;white-space:nowrap;background:rgba(0,0,0,0.45);padding:3px 10px;border-radius:20px}
+.scanner-off-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);color:#fff;font-size:14px;border-radius:14px}
+/* Flash on detect */
+@keyframes flashGreen{0%{background:rgba(26,138,74,0.0)}30%{background:rgba(26,138,74,0.45)}100%{background:rgba(26,138,74,0.0)}}
+.scanner-flash{position:absolute;inset:0;border-radius:14px;pointer-events:none;animation:flashGreen .5s ease-out forwards}
 .scanner-btn-row{display:flex;gap:8px;margin-bottom:12px}
 .btn{padding:10px 16px;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;transition:.15s;flex:1}
 .btn-green{background:var(--green);color:#fff}
@@ -160,12 +140,11 @@ body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:v
 .result-info-val{color:var(--text);font-weight:500;direction:ltr;text-align:left;font-size:12px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:2px 8px;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .barcode-val{font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:var(--green-dark);letter-spacing:.5px}
 </style>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 <div id="app">
   <div class="hdr">
-    <div class="hdr-title">🛒 <span class="hdr-gold">الأنصاري</span> — أسعار المهرجان</div>
+    <div class="hdr-title">🛒 <span class="hdr-gold">الأنصاري</span> — المنتجات</div>
     <div class="hdr-sub">2026 م</div>
   </div>
   <div class="nav">
@@ -191,16 +170,15 @@ body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:v
     </div>
     
     <div class="scanner-wrap" id="scanner-container" style="display:none">
-      <video id="scanner-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:0;border-radius:inherit"></video>
-      <div id="qr-reader"></div>
+      <video id="scanner-video" autoplay playsinline muted></video>
       <div class="scanner-overlay">
         <div class="scanner-zone">
           <div class="scanner-line"></div>
-          <div class="sc-corner sc-tl"></div>
-          <div class="sc-corner sc-tr"></div>
-          <div class="sc-corner sc-bl"></div>
-          <div class="sc-corner sc-br"></div>
         </div>
+        <div class="scanner-corner sc-tl"></div>
+        <div class="scanner-corner sc-tr"></div>
+        <div class="scanner-corner sc-bl"></div>
+        <div class="scanner-corner sc-br"></div>
         <div class="scanner-hint">وجّه الباركود داخل الإطار</div>
       </div>
     </div>
@@ -247,7 +225,7 @@ body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:v
           <input class="form-input" type="number" id="f-orig" placeholder="0" inputmode="decimal" oninput="calcDiscount()">
         </div>
         <div>
-          <label class="form-label">سعر المهرجان (ر.س)</label>
+          <label class="form-label">السعر بعد الخصم (ر.س)</label>
           <input class="form-input" type="number" id="f-sale" placeholder="0" inputmode="decimal" oninput="calcDiscount()">
         </div>
       </div>
@@ -316,6 +294,9 @@ function mergeLocal() {
 mergeLocal();
 
 let searchType = 'barcode';
+let scannerOn = false;
+let scannerStream = null;
+let scanInterval = null;
 let listItems = [];
 let listPage = 0;
 const PAGE_SIZE = 30;
@@ -421,7 +402,7 @@ function renderProduct(p) {
         <div class="price-val">${p[2]}<span class="unit"> ر.س</span></div>
       </div>
       <div class="price-box after">
-        <div class="price-label">سعر المهرجان</div>
+        <div class="price-label">السعر بعد الخصم</div>
         <div class="price-val">${p[3]}<span class="unit"> ر.س</span></div>
       </div>
       <div class="price-box discount">
@@ -440,262 +421,117 @@ function clearResult() {
   document.getElementById('search-input').value = '';
 }
 
-// ====== SCANNER — getUserMedia أولاً + html5-qrcode stream ======
-let scanStream   = null;
-let h5qr         = null;
-let scanning     = false;
-let scanCanvas   = null;
-let scanCtx      = null;
-let scanTimer    = null;
-
+// Scanner
 async function toggleScanner() {
-  if (scanning) { stopScanner(); return; }
-  const btn = document.getElementById('scanner-toggle-btn');
-  btn.innerHTML = '⏳ جاري التشغيل...';
-  btn.disabled = true;
-  await startScanner();
-}
-
-async function startScanner() {
-  const btn       = document.getElementById('scanner-toggle-btn');
+  if (scannerOn) { stopScanner(); return; }
   const container = document.getElementById('scanner-container');
-  const video     = document.getElementById('scanner-video');
-
-  // ── الخطوة 1: تشغيل الكاميرا بإعدادات الجهاز الافتراضية — بدون أي تعديل ──
-  // كاميرا خلفية بأعلى دقة ممكنة — الجهاز يختار باقي الإعدادات
-  const camConfigs = [
-    { video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } } },
-    { video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } },
-    { video: { facingMode: 'environment' } },
-    { video: { width: { ideal: 1280 }, height: { ideal: 720 } } },
-    { video: true }
-  ];
-  for (const cfg of camConfigs) {
-    try { scanStream = await navigator.mediaDevices.getUserMedia(cfg); break; }
-    catch(e) { scanStream = null; }
-  }
-
-  if (!scanStream) {
-    btn.innerHTML = '📷 تشغيل السكانر';
-    btn.style.background = '';
-    btn.disabled = false;
-    document.getElementById('result-area').innerHTML =
-      `<div class="error-card">❌ تعذّر الوصول للكاميرا. تأكد من منح الإذن للتطبيق في إعدادات الجهاز.</div>`;
-    return;
-  }
-
-  // ── الخطوة 2: عرض الفيديو ──
-  video.srcObject = scanStream;
-  video.setAttribute('playsinline', '');
-  video.setAttribute('muted', '');
-  await new Promise(res => {
-    video.onloadedmetadata = () => video.play().then(res).catch(res);
-    setTimeout(res, 3000);
-  });
-
-  // تفعيل أفضل فوكس ممكن للمسافة القريبة
+  const btn = document.getElementById('scanner-toggle-btn');
   try {
-    const track = scanStream.getVideoTracks()[0];
-    const caps  = track.getCapabilities();
-    const adv   = [];
-
-    // أولوية: macro > continuous — كلاهما يعمل على المسافة القريبة
-    if (caps.focusMode?.includes('macro'))           adv.push({ focusMode: 'macro' });
-    else if (caps.focusMode?.includes('continuous')) adv.push({ focusMode: 'continuous' });
-
-    // focusDistance: أصغر قيمة = أقرب مسافة تركيز
-    if (caps.focusDistance) {
-      const minDist = caps.focusDistance.min ?? 0;
-      adv.push({ focusDistance: minDist });
-    }
-
-    if (adv.length) await track.applyConstraints({ advanced: adv });
-  } catch(e) {}
-
-  container.style.display = 'block';
-  scanning = true;
-  btn.innerHTML = '⏹️ إيقاف السكانر';
-  btn.style.background = 'var(--red)';
-  btn.disabled = false;
-
-  // لمس الشاشة يجبر الكاميرا على إعادة التركيز
-  video.addEventListener('click', refocusCamera, { passive: true });
-
-  // ── الخطوة 3: BarcodeDetector أولاً (أصلي وأسرع) ثم html5-qrcode ──
-  if ('BarcodeDetector' in window) {
-    startBarcodeDetectorScan(video);
-  } else if (typeof Html5Qrcode !== 'undefined') {
-    startH5QrFromStream();
-  } else {
-    startManualScan(video);
-  }
-}
-
-// ─── المحرك الرئيسي: BarcodeDetector مباشرة على الفيديو — بدون Canvas ───
-function startBarcodeDetectorScan(video) {
-  const detector = new BarcodeDetector({
-    formats: ['ean_13','ean_8','code_128','upc_a','upc_e','itf','code_39','qr_code','data_matrix']
-  });
-
-  let lastCode = '', streak = 0, busy = false;
-
-  scanTimer = setInterval(async () => {
-    if (!scanning || busy || video.readyState < 2) return;
-    busy = true;
-    try {
-      // تحليل الفيديو مباشرة — أعلى جودة بدون أي تحويل أو ضغط
-      const results = await detector.detect(video);
-      if (results.length > 0) {
-        const code = results[0].rawValue;
-        if (code === lastCode) { streak++; } else { lastCode = code; streak = 1; }
-        if (streak >= 2) {
-          clearInterval(scanTimer); scanTimer = null;
-          onBarcodeFound(code);
-          setTimeout(() => { if (scanning) stopScanner(); }, 500);
-        }
-      } else { lastCode = ''; streak = 0; }
-    } catch(e) {
-      // بعض الأجهزة لا تقبل الفيديو مباشرة — نرجع للـ Canvas
-      try {
-        if (!scanCanvas) {
-          scanCanvas = document.createElement('canvas');
-          scanCtx    = scanCanvas.getContext('2d', { willReadFrequently: true });
-        }
-        scanCanvas.width  = video.videoWidth  || 640;
-        scanCanvas.height = video.videoHeight || 480;
-        scanCtx.drawImage(video, 0, 0);
-        const res2 = await detector.detect(scanCanvas);
-        if (res2.length > 0) {
-          const code = res2[0].rawValue;
-          if (code === lastCode) { streak++; } else { lastCode = code; streak = 1; }
-          if (streak >= 2) {
-            clearInterval(scanTimer); scanTimer = null;
-            onBarcodeFound(code);
-            setTimeout(() => { if (scanning) stopScanner(); }, 500);
-          }
-        } else { lastCode = ''; streak = 0; }
-      } catch(e2) {}
-    }
-    busy = false;
-  }, 150);
-}
-
-// ─── المحرك الاحتياطي: html5-qrcode عبر scanFile ───
-function startH5QrFromStream() {
-  const video = document.getElementById('scanner-video');
-  scanCanvas = document.createElement('canvas');
-  scanCtx    = scanCanvas.getContext('2d', { willReadFrequently: true });
-  h5qr = new Html5Qrcode('qr-reader', { verbose: false });
-
-  let lastCode = '', streak = 0, busy = false;
-
-  scanTimer = setInterval(async () => {
-    if (!scanning || busy || video.readyState < 2) return;
-    busy = true;
-    try {
-      const w = video.videoWidth  || 640;
-      const h = video.videoHeight || 480;
-      scanCanvas.width  = w;
-      scanCanvas.height = h;
-      scanCtx.drawImage(video, 0, 0, w, h);
-      const blob = await new Promise(res => scanCanvas.toBlob(res, 'image/jpeg', 0.92));
-      if (!blob) { busy = false; return; }
-      const file = new File([blob], 'f.jpg', { type: 'image/jpeg' });
-      const code = await Html5Qrcode.scanFile(file, false).catch(() => null);
-      if (code) {
-        if (code === lastCode) { streak++; } else { lastCode = code; streak = 1; }
-        if (streak >= 2) {
-          clearInterval(scanTimer); scanTimer = null;
-          onBarcodeFound(code);
-          setTimeout(() => { if (scanning) stopScanner(); }, 600);
-        }
-      } else { lastCode = ''; streak = 0; }
-    } catch(e) {}
-    busy = false;
-  }, 300);
-}
-
-// ─── Fallback: BarcodeDetector أو Canvas بدون مكتبة ───
-function startManualScan(video) {
-  scanCanvas = document.createElement('canvas');
-  scanCtx    = scanCanvas.getContext('2d', { willReadFrequently: true });
-  const useDetector = 'BarcodeDetector' in window;
-  const detector    = useDetector
-    ? new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','upc_a','upc_e','itf','code_39','qr_code'] })
-    : null;
-
-  let lastCode = '', streak = 0, busy = false;
-
-  scanTimer = setInterval(async () => {
-    if (!scanning || busy || video.readyState < 2) return;
-    busy = true;
-    try {
-      scanCanvas.width  = video.videoWidth  || 640;
-      scanCanvas.height = video.videoHeight || 480;
-      scanCtx.drawImage(video, 0, 0);
-
-      if (detector) {
-        const res = await detector.detect(scanCanvas);
-        if (res.length) {
-          const code = res[0].rawValue;
-          if (code === lastCode) streak++; else { lastCode = code; streak = 1; }
-          if (streak >= 2) {
-            clearInterval(scanTimer); scanTimer = null;
-            onBarcodeFound(code);
-            setTimeout(() => { if (scanning) stopScanner(); }, 600);
-          }
-        } else { lastCode = ''; streak = 0; }
+    // Request high-res back camera with macro/close focus support
+    const constraints = {
+      video: {
+        facingMode: { ideal: 'environment' },
+        width:  { ideal: 1920, min: 1280 },
+        height: { ideal: 1080, min: 720 },
+        focusMode: { ideal: ['continuous', 'macro'] },
+        advanced: [{ focusMode: 'continuous' }, { zoom: 1.0 }]
       }
-    } catch(e) {}
-    busy = false;
-  }, 250);
-}
+    };
+    scannerStream = await navigator.mediaDevices.getUserMedia(constraints);
+    const video = document.getElementById('scanner-video');
+    video.srcObject = scannerStream;
+    container.style.display = 'block';
+    btn.innerHTML = '⏹️ إيقاف السكانر';
+    btn.style.background = 'var(--red)';
+    scannerOn = true;
+    await video.play();
 
-// إعادة التركيز عند اللمس
-async function refocusCamera() {
-  if (!scanStream) return;
-  try {
-    const track = scanStream.getVideoTracks()[0];
-    const caps  = track.getCapabilities();
-    // إيقاف ثم إعادة تشغيل الفوكس — يجبر الكاميرا على إعادة الضبط
-    if (caps.focusMode?.includes('continuous')) {
-      await track.applyConstraints({ advanced: [{ focusMode: 'manual' }] });
-      setTimeout(async () => {
-        try { await track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }); } catch(e) {}
-      }, 100);
+    // Try to apply advanced camera capabilities (autofocus + torch if supported)
+    try {
+      const track = scannerStream.getVideoTracks()[0];
+      const caps = track.getCapabilities ? track.getCapabilities() : {};
+      const applyConstraints = {};
+      if (caps.focusMode && caps.focusMode.includes('continuous')) applyConstraints.focusMode = 'continuous';
+      if (caps.focusDistance) applyConstraints.focusDistance = caps.focusDistance.min; // closest focus
+      if (caps.zoom) applyConstraints.zoom = 1.0;
+      if (Object.keys(applyConstraints).length) await track.applyConstraints({ advanced: [applyConstraints] });
+    } catch(e) {}
+
+    startBarcodeDetection(video);
+  } catch(e) {
+    // Fallback: lower constraints if high-res rejected
+    try {
+      scannerStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+      const video = document.getElementById('scanner-video');
+      video.srcObject = scannerStream;
+      container.style.display = 'block';
+      btn.innerHTML = '⏹️ إيقاف السكانر';
+      btn.style.background = 'var(--red)';
+      scannerOn = true;
+      await video.play();
+      startBarcodeDetection(video);
+    } catch(e2) {
+      alert('تعذّر الوصول إلى الكاميرا. تأكد من منح الإذن.');
     }
-  } catch(e) {}
+  }
 }
 
 function stopScanner() {
-  if (scanTimer)  { clearInterval(scanTimer); scanTimer = null; }
-  const _vid = document.getElementById('scanner-video');
-  _vid.removeEventListener('click', refocusCamera);
-  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
-  try { if (h5qr) { h5qr.clear(); h5qr = null; } } catch(e) {}
-  scanning   = false;
-  scanCanvas = null;
-  scanCtx    = null;
+  if (scannerStream) { scannerStream.getTracks().forEach(t => t.stop()); scannerStream = null; }
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
   document.getElementById('scanner-container').style.display = 'none';
   const btn = document.getElementById('scanner-toggle-btn');
   btn.innerHTML = '📷 تشغيل السكانر';
   btn.style.background = '';
-  btn.disabled = false;
+  scannerOn = false;
 }
 
-function onBarcodeFound(code) {
-  if (navigator.vibrate) navigator.vibrate([60, 30, 80]);
-
-  // وميض أخضر
-  const wrap  = document.getElementById('scanner-container');
+function flashDetected() {
+  const wrap = document.getElementById('scanner-container');
   const flash = document.createElement('div');
   flash.className = 'scanner-flash';
   wrap.appendChild(flash);
-  setTimeout(() => flash.remove(), 600);
+  setTimeout(() => flash.remove(), 500);
+}
 
-  document.getElementById('search-input').value = code;
-  setSearchType('barcode');
-  if (typeof doSearch === 'function') doSearch();
+function startBarcodeDetection(video) {
+  if ('BarcodeDetector' in window) {
+    const det = new BarcodeDetector({formats:['ean_13','ean_8','code_128','code_39','qr_code','upc_a','upc_e','itf','codabar','data_matrix']});
+    let lastVal = null, sameCount = 0;
+    const detect = async () => {
+      if (!scannerOn || video.readyState < 2) return;
+      try {
+        // Crop center area for faster detection (matches scanner zone ~72% wide, 38% tall)
+        const codes = await det.detect(video);
+        if (codes.length) {
+          const val = codes[0].rawValue;
+          // Confirm same code twice to avoid false reads
+          if (val === lastVal) {
+            sameCount++;
+            if (sameCount >= 2) {
+              document.getElementById('search-input').value = val;
+              setSearchType('barcode');
+              doSearch();
+              flashDetected();
+              setTimeout(stopScanner, 400);
+            }
+          } else {
+            lastVal = val;
+            sameCount = 1;
+          }
+        } else {
+          lastVal = null; sameCount = 0;
+        }
+      } catch(e){}
+    };
+    scanInterval = setInterval(detect, 120); // ~8 fps detection
+  } else {
+    // Fallback: ZXing-js library from CDN
+    document.getElementById('result-area').innerHTML = `<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:10px;font-size:12px;color:#856404;margin-bottom:10px">
+      ⚠️ السكانر التلقائي غير مدعوم في هذا المتصفح. يُرجى كتابة الباركود يدوياً أو استخدام Chrome/Edge.</div>`;
+    // Still run canvas loop so video stays visible
+    scanInterval = setInterval(() => {}, 1000);
+  }
 }
 
 // Pages
@@ -705,7 +541,7 @@ function showPage(p) {
   document.getElementById('page-'+p).classList.add('active');
   document.getElementById('nav-'+p).classList.add('active');
   if (p === 'list') renderList();
-  if (p === 'scan' && !scanning) {}
+  if (p === 'scan' && !scannerOn) {}
 }
 
 // Product list
@@ -760,7 +596,7 @@ function showDetail(idx) {
     </div>
     <div class="prices-grid">
       <div class="price-box before"><div class="price-label">السعر الأصلي</div><div class="price-val">${p[2]}<span class="unit"> ر.س</span></div></div>
-      <div class="price-box after"><div class="price-label">سعر المهرجان</div><div class="price-val">${p[3]}<span class="unit"> ر.س</span></div></div>
+      <div class="price-box after"><div class="price-label">السعر بعد الخصم</div><div class="price-val">${p[3]}<span class="unit"> ر.س</span></div></div>
       <div class="price-box discount"><div class="price-label">نسبة الخصم</div><div class="price-val">${p[4]}<span class="unit">%</span></div></div>
     </div>`;
   document.getElementById('detail-modal').classList.add('open');
@@ -888,7 +724,7 @@ async function handleExcelUpload(event) {
 
 // Export
 function exportData() {
-  const rows = [['الباركود','رقم الصنف','اسم المنتج','السعر الأصلي','سعر المهرجان','نسبة الخصم']];
+  const rows = [['الباركود','رقم الصنف','اسم المنتج','السعر الأصلي','السعر بعد الخصم','نسبة الخصم']];
   // Build barcode reverse map
   const idx2barcodes = {};
   Object.entries(BARCODE_MAP).forEach(([b, idx]) => {
